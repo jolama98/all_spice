@@ -1,0 +1,30 @@
+namespace all_spice.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class RecipesController : ControllerBase
+{
+    private readonly RecipeService _recipeService;
+    private readonly Auth0Provider _auth0Provider;
+    public RecipesController(RecipeService recipeService, Auth0Provider auth0Provider)
+    {
+        _recipeService = recipeService;
+        _auth0Provider = auth0Provider;
+    }
+    [HttpPost]
+    [Authorize]
+    public async Task<ActionResult<Recipe>> CreateRecipe([FromBody] Recipe recipeData)
+    {
+        try
+        {
+            Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+            recipeData.CreatorId = userInfo.Id;
+            Recipe recipe = _recipeService.CreateRecipe(recipeData);
+            return Ok(recipe);
+        }
+        catch (Exception exception)
+        {
+            return BadRequest(exception.Message);
+        }
+    }
+}
