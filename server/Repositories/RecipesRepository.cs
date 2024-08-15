@@ -1,6 +1,3 @@
-
-
-
 namespace all_spice.Repositories;
 
 public class RecipesRepository
@@ -52,6 +49,16 @@ public class RecipesRepository
         return recipes;
     }
 
+    public void DeleteRecipe(int recipeId)
+    {
+        string sql = "DELETE FROM recipes WHERE id = @recipeId LIMIT 1;";
+
+        int rowsAffected = _db.Execute(sql, new { recipeId });
+
+        if (rowsAffected == 0) throw new Exception("DELETE FAILED");
+        if (rowsAffected > 1) throw new Exception("DELETE WAS OVER POWERED");
+    }
+
     internal Recipe GetAllRecipesById(int recipeId)
     {
         string sql = @"
@@ -71,5 +78,23 @@ public class RecipesRepository
     {
         recipe.Creator = profile;
         return recipe;
+    }
+
+    internal void UpdateRecipe(Recipe recipeToUpdate)
+    {
+string sql = @"
+UPDATE
+recipes
+SET
+title = @title,
+instructions = @instructions,
+category =  @category,
+img = @img
+WHERE id = @Id LIMIT 1;";
+
+int rowsAffected = _db.Execute(sql, recipeToUpdate);
+
+        if (rowsAffected == 0) throw new Exception("UPDATE FAILED");
+        if (rowsAffected > 1) throw new Exception("UPDATE DID NOT FAIL, BUT THAT IS STILL A PROBLEM");
     }
 }
