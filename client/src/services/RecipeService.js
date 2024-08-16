@@ -5,7 +5,7 @@ import { Recipe } from "@/models/Recipes.js"
 
 class RecipeService {
 
-  setActiveEvent(recipes) {
+  setActiveRecipe(recipes) {
     AppState.activeRecipes = recipes
   }
 
@@ -17,13 +17,6 @@ class RecipeService {
       AppState.activeRecipes = recipe
   }
 
-  // async getAlbumById(albumId) {
-  //   AppState.activeAlbum = null
-  //   const response = await api.get(`api/albums/${albumId}`)
-  //   logger.log('🖼️📡🧌', response.data)
-  //   const album = new Album(response.data)
-  //   AppState.activeAlbum = album
-  // }
   async getAllRecipes() {
     const response = await api.get('api/recipes')
     logger.log('GOT RECIPES 🍔', response.data)

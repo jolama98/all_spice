@@ -6,10 +6,15 @@ public class RecipesController : ControllerBase
 {
     private readonly RecipeService _recipeService;
     private readonly Auth0Provider _auth0Provider;
-    public RecipesController(RecipeService recipeService, Auth0Provider auth0Provider)
+    private readonly IngredientsService _ingredientsService;
+
+
+
+    public RecipesController(RecipeService recipeService, Auth0Provider auth0Provider, IngredientsService ingredientsService)
     {
         _recipeService = recipeService;
         _auth0Provider = auth0Provider;
+        _ingredientsService = ingredientsService;
     }
     [HttpPost]
     [Authorize]
@@ -90,4 +95,19 @@ return Ok(recipe);
     }
 }
 
+[HttpGet("{recipeId}/ingredients")]
+
+
+public ActionResult<List<Ingredients>> GetIngredientsForRecipe(int recipeId)
+{
+    try 
+    {
+    List<Ingredients> ingredients = _ingredientsService.GetIngredientsForRecipe(recipeId);
+    return ingredients;
+    }
+    catch (Exception exception)
+    {
+      return BadRequest(exception.Message);
+    }
+}
 }
