@@ -78,36 +78,39 @@ public class RecipesController : ControllerBase
         }
     }
 
-[HttpPut("{recipeId}")]
-[Authorize]
+    [HttpPut("{recipeId}")]
+    [Authorize]
 
-public async Task<ActionResult<Recipe>> UpdateRecipe(int recipeId, [FromBody] Recipe recipeData)
-{
-    try 
+    public async Task<ActionResult<Recipe>> UpdateRecipe(int recipeId, [FromBody] Recipe recipeData)
     {
-Account userInfo =  await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
-Recipe recipe = _recipeService.UpdateRecipe(recipeId, userInfo.Id, recipeData);
-return Ok(recipe);
+        try
+        {
+            Account userInfo = await _auth0Provider.GetUserInfoAsync<Account>(HttpContext);
+            Recipe recipe = _recipeService.UpdateRecipe(recipeId, userInfo.Id, recipeData);
+            return Ok(recipe);
+        }
+        catch (Exception exception)
+        {
+            return BadRequest(exception.Message);
+        }
     }
-    catch (Exception exception)
-    {
-      return BadRequest(exception.Message);
-    }
-}
 
-[HttpGet("{recipeId}/ingredients")]
+    [HttpGet("{recipeId}/ingredients")]
 
 
-public ActionResult<List<Ingredients>> GetIngredientsForRecipe(int recipeId)
-{
-    try 
+    public ActionResult<List<Ingredients>> GetIngredientsForRecipe(int recipeId)
     {
-    List<Ingredients> ingredients = _ingredientsService.GetIngredientsForRecipe(recipeId);
-    return ingredients;
+        try
+        {
+            List<Ingredients> ingredients = _ingredientsService.GetIngredientsForRecipe(recipeId);
+            return ingredients;
+        }
+        catch (Exception exception)
+        {
+            return BadRequest(exception.Message);
+        }
     }
-    catch (Exception exception)
-    {
-      return BadRequest(exception.Message);
-    }
-}
+
+
+
 }

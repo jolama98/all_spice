@@ -1,6 +1,7 @@
 
 
 
+
 namespace all_spice.Repositories;
 
 public class IngredientsRepository
@@ -30,6 +31,16 @@ public class IngredientsRepository
         return ingredients;
     }
 
+    internal void DestroyIngredient(int ingredientsId)
+    {
+        string sql = @"DELETE FROM ingredients WHERE id = @ingredientsId LIMIT 1;";
+
+        int rowsAffected = _db.Execute(sql, new { ingredientsId });
+
+        if (rowsAffected == 0) throw new Exception("DELETE FAILED");
+        if (rowsAffected > 1) throw new Exception("DELETE WAS OVER POWERED");
+    }
+
     internal List<Ingredients> GetIngredientsForRecipe(int recipeId)
     {
         string sql = @"
@@ -38,7 +49,7 @@ public class IngredientsRepository
         recipes.*
         FROM ingredients
         JOIN recipes ON recipes.id = ingredients.recipeId
-        WHERE ingredients.recipeId  = @recipeId;";
+        WHERE ingredients.recipeId = @recipeId;";
 
         List<Ingredients> ingredients = _db.Query<Ingredients, Profile, Ingredients>(sql, JoinCreator, new { recipeId }).ToList();
         return ingredients;

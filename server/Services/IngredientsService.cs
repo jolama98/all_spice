@@ -1,5 +1,7 @@
 
 
+
+
 namespace all_spice.Services;
 
 public class IngredientsService
@@ -13,9 +15,22 @@ public class IngredientsService
 
     internal Ingredients CreateIngredient(Ingredients ingredientData, Account userInfo)
     {
-            Ingredients ingredients = _ingredientsRepository.CreateIngredient(ingredientData, userInfo);
-               return ingredients;
-       }
+        Ingredients ingredients = _ingredientsRepository.CreateIngredient(ingredientData, userInfo);
+        return ingredients;
+    }
+
+    internal string DestroyIngredient(int ingredientsId, string userId)
+    {
+
+
+
+
+
+        _ingredientsRepository.DestroyIngredient(ingredientsId);
+        return "Ingredient Deleted";
+    }
+
+
 
     internal List<Ingredients> GetIngredientsForRecipe(int recipeId)
     {
@@ -23,10 +38,3 @@ public class IngredientsService
         return ingredients;
     }
 }
-
-
-// internal List<Picture> GetPicturesByAlbumId(int albumId)
-// {
-//     List<Picture> pictures = _repository.GetPicturesByAlbumId(albumId);
-//     return pictures;
-// }
