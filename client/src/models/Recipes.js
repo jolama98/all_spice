@@ -9,6 +9,8 @@ this.title = data.title
     this.updatedAt = new Date(data.updatedAt)
     this.creator = data.creator
   }
+  get recipeBackgroundImage() {
+    return `url(${this.img})`
+  }
 }
-
 

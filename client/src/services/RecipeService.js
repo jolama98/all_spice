@@ -4,12 +4,33 @@ import { api } from "./AxiosService.js"
 import { Recipe } from "@/models/Recipes.js"
 
 class RecipeService {
-  async getRecipes() {
+
+  setActiveEvent(recipes) {
+    AppState.activeRecipes = recipes
+  }
+
+  async getRecipeById(recipeId) {
+    AppState.activeRecipes = null
+    const response = await api.get(`api/recipes/${recipeId}`)
+    logger.log('🖼️📡🧌', response.data)
+      const recipe = new Recipe(response.data)
+      AppState.activeRecipes = recipe
+  }
+
+  // async getAlbumById(albumId) {
+  //   AppState.activeAlbum = null
+  //   const response = await api.get(`api/albums/${albumId}`)
+  //   logger.log('🖼️📡🧌', response.data)
+  //   const album = new Album(response.data)
+  //   AppState.activeAlbum = album
+  // }
+  async getAllRecipes() {
     const response = await api.get('api/recipes')
     logger.log('GOT RECIPES 🍔', response.data)
     const recipes = response.data.map(recipePOJO => new Recipe(recipePOJO))
     AppState.recipes = recipes
   }
 }
+
 export const recipeService = new RecipeService()
 
