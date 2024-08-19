@@ -1,20 +1,23 @@
 import { AppState } from "@/AppState.js"
 import { logger } from "../utils/Logger.js"
 import { api } from "./AxiosService.js"
-import { Recipe } from "@/models/Recipes.js"
+import { Recipe } from "../models/Recipes.js"
 
 class RecipeService {
 
-  setActiveRecipe(recipes) {
-    AppState.activeRecipes = recipes
+  setActiveRecipe(recipeProp) {
+    AppState.activeRecipes = recipeProp
   }
 
   async getRecipeById(recipeId) {
     AppState.activeRecipes = null
+
     const response = await api.get(`api/recipes/${recipeId}`)
     logger.log('🖼️📡🧌', response.data)
-      const recipe = new Recipe(response.data)
-      AppState.activeRecipes = recipe
+
+    const recipe = new Recipe(response.data)
+    AppState.activeRecipes = recipe
+
   }
 
   async getAllRecipes() {
