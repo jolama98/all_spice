@@ -5,27 +5,22 @@ import { recipeService } from '../services/RecipeService.js'
 import { AppState } from '../AppState.js';
 import RecipeCard from '../components/RecipeCard.vue';
 import RecipeModal from '../components/RecipeModal.vue';
-import { useRoute } from 'vue-router';
 import RecipeFrom from '../components/RecipeFrom.vue';
 
 const recipes = computed(() => AppState.recipes)
-const route = useRoute()
 
 onMounted(() => {
   getAllRecipes()
-  getRecipeById()
+  // getRecipeById()
 })
 
-
-
-
-async function getRecipeById() {
-  try {
-    await recipeService.getRecipeById(route.params.recipe)
-  } catch (error) {
-    Pop.toast('Could not get recipe id')
-  }
-}
+// async function getRecipeById() {
+//   try {
+//     await recipeService.getRecipeById(route.params.recipe)
+//   } catch (error) {
+//     Pop.toast('Could not get recipe id')
+//   }
+// }
 
 async function getAllRecipes() {
   try {
