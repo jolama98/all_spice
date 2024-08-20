@@ -32,21 +32,6 @@ async function createRecipe() {
 }
 
 
-// async function createCult() {
-//   try {
-//     await cultsService.createCult(editableCultData.value)
-//     Modal.getOrCreateInstance('#createCultModal').hide()
-//     editableCultData.value = {
-//       name: '',
-//       fee: 0.00,
-//       coverImg: '',
-//       description: ''
-//     }
-//   } catch (error) {
-//     Pop.error(error)
-//   }
-// }
-
 </script>
 
 
@@ -55,8 +40,8 @@ async function createRecipe() {
     <div class="modal fade" id="recipeFormModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">New Recipe</h1>
+          <div class="modal-header bg-success ">
+            <h1 class="modal-title fs-1 sahitya-font" id="exampleModalLabel">New Recipe</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -91,8 +76,8 @@ async function createRecipe() {
             </div>
 
           </div>
-          <div class="mb-3 form-check d-flex justify-content-around ">
-            <!-- <button type="button" @click="resetFrom()" class="btn btn-danger">clear</button> -->
+          <div class="mb-2 m-2 form-check d-flex justify-content-end ">
+
             <button class="btn btn-primary" type="submit">Submit</button>
           </div>
         </div>

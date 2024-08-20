@@ -2,6 +2,9 @@
 import { AppState } from '@/AppState.js';
 import { Recipe } from '../models/Recipes.js';
 import { computed } from 'vue';
+import Pop from '@/utils/Pop.js';
+import { recipeService } from '@/services/RecipeService.js';
+import { Modal } from 'bootstrap';
 
 
 
@@ -10,6 +13,29 @@ defineProps({ recipes: Recipe })
 
 
 const recipe = computed(() => AppState.activeRecipes)
+const account = computed(() => AppState.account)
+const creator = computed(() => AppState.recipes)
+
+
+async function destroyRecipe(recipeId) {
+  try {
+    const recipeToDestroy = await Pop.confirm("???")
+    if (recipeToDestroy == false) {
+      return
+    }
+    await recipeService.destroyRecipe(recipeId)
+    Modal.getOrCreateInstance('#recipeModal').hide()
+    Pop.success('Recipe was deleted  successfully')
+  }
+  catch (error) {
+    Pop.error(error);
+  }
+}
+
+function editRecipe() {
+
+}
+
 
 </script>
 
@@ -27,14 +53,26 @@ const recipe = computed(() => AppState.activeRecipes)
           </div>
 
           <div class="col-7">
-            <div class="card border-0 ">
-              <div class="d-flex  justify-content-between p-3">
-                <p class="text-bg rounded-5 p-2 d-flex align-self-start text-light">{{ recipe?.category }}</p>
-                <p>By {{ recipe?.creator.name }}</p>
+            <div class="card border-0">
+              <div class="d-flex p-2 justify-content-between ">
+                <h2>{{ recipe?.title }} <button class="btn  fs-1" data-bs-toggle="dropdown" aria-expanded="false"
+                    v-if="account && !creator">...</button>
+                  <div class="dropdown">
+                    <ul class="dropdown-menu">
+                      <li><button class="dropdown-item btn del-btn " @click="destroyRecipe(recipe.id)">Delete</button>
+                      </li>
+                      <li><button class="dropdown-item btn edit-btn" @click="editRecipe()">Edit Recipe</button>
+                      </li>
+                    </ul>
+                  </div>
+                </h2>
                 <button type="button" class="btn-close p-2" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <h1>{{ recipe?.title }}</h1>
-              <p>Instructions</p>
+              <div class="d-flex flex-column justify-content-between">
+                <p class="text-bg rounded-5 p-2 d-flex align-self-start text-light">{{ recipe?.category }}</p>
+                <p>By {{ recipe?.creator.name }}</p>
+              </div>
+              <p class="fw-bold">Instructions</p>
               <p>{{ recipe?.instructions }}</p>
             </div>
           </div>
@@ -53,5 +91,15 @@ const recipe = computed(() => AppState.activeRecipes)
 
 img {
   height: 100%;
+}
+
+.edit-btn:hover {
+  background-color: rgb(0, 183, 255);
+  color: beige;
+}
+
+.del-btn:hover {
+  background-color: red;
+  color: beige;
 }
 </style>

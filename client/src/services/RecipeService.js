@@ -5,6 +5,15 @@ import { Recipe } from "../models/Recipes.js"
 
 class RecipeService {
 
+  async destroyRecipe(recipeId) {
+    const response = await api.delete(`api/recipes/${recipeId}`)
+    logger.log(response.data)
+    const recipeIndex = AppState.recipes.findIndex(recipe => recipe.id == recipeId)
+    if (recipeIndex == -1) throw new Error("You messed up on findIndex, big fella")
+    AppState.recipes.splice(recipeIndex, 1)
+  }
+
+
   setActiveRecipe(recipes) {
     AppState.activeRecipes = recipes
   }
@@ -26,12 +35,7 @@ class RecipeService {
     return newRecipe
   }
 
-  // async createEvent(eventData) {
-  //   const response = await api.post('api/events', eventData)
-  //   const newEvent = new Event(response.data)
-  //   AppState.events.unshift(newEvent)
-  //   return newEvent
-  // }
+
 
   async getAllRecipes() {
     const response = await api.get('api/recipes')
