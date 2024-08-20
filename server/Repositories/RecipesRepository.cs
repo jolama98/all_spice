@@ -82,7 +82,7 @@ public class RecipesRepository
 
     internal void UpdateRecipe(Recipe recipeToUpdate)
     {
-string sql = @"
+        string sql = @"
 UPDATE
 recipes
 SET
@@ -92,7 +92,7 @@ category =  @category,
 img = @img
 WHERE id = @Id LIMIT 1;";
 
-int rowsAffected = _db.Execute(sql, recipeToUpdate);
+        int rowsAffected = _db.Execute(sql, recipeToUpdate);
 
         if (rowsAffected == 0) throw new Exception("UPDATE FAILED");
         if (rowsAffected > 1) throw new Exception("UPDATE DID NOT FAIL, BUT THAT IS STILL A PROBLEM");
