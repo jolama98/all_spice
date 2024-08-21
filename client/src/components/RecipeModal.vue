@@ -6,16 +6,11 @@ import Pop from '@/utils/Pop.js';
 import { recipeService } from '@/services/RecipeService.js';
 import { Modal } from 'bootstrap';
 
-
-
 defineProps({ recipes: Recipe })
 // instructionsProp: { type: Instructions, required: true }
 
-
 const recipe = computed(() => AppState.activeRecipes)
 const account = computed(() => AppState.account)
-const creator = computed(() => AppState.recipes)
-
 
 async function destroyRecipe(recipeId) {
   try {
@@ -56,7 +51,7 @@ function editRecipe() {
             <div class="card border-0">
               <div class="d-flex p-2 justify-content-between ">
                 <h2>{{ recipe?.title }} <button class="btn  fs-1" data-bs-toggle="dropdown" aria-expanded="false"
-                    v-if="account && !creator">...</button>
+                    v-if="account?.id == recipe.creator?.id">...</button>
                   <div class="dropdown">
                     <ul class="dropdown-menu">
                       <li><button class="dropdown-item btn del-btn " @click="destroyRecipe(recipe.id)">Delete</button>
