@@ -10,5 +10,4 @@ public class Recipe
     public string Category { get; set; }
     public string CreatorId { get; set; }
     public Profile Creator { get; set; }
-
 }

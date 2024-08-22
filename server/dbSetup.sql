@@ -23,7 +23,7 @@ DROP TABLE ingredients
 
 
 CREATE TABLE ingredients (
-  id INT NOT NULL primary key AUTO_INCREMENT,
+id INT NOT NULL primary key AUTO_INCREMENT,
 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Time Created',
 updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update',
 name VARCHAR(255) NOT NULL,
@@ -33,3 +33,27 @@ FOREIGN KEY (recipeId) REFERENCES recipes  (id) ON DELETE CASCADE
 );
 
 
+CREATE TABLE favorites (
+id INT NOT NULL primary key AUTO_INCREMENT,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Time Created',
+updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update',
+recipeId INT NOT NULL,
+accountId VARCHAR(255) NOT NULL,
+FOREIGN KEY (recipeId) REFERENCES recipes (id) ON DELETE CASCADE,
+FOREIGN KEY (accountId) REFERENCES accounts(id) ON DELETE CASCADE
+);
+
+
+    SELECT favorites.*, accounts.*
+    FROM favorites
+    JOIN accounts ON accounts.id = favorites.accountId
+    WHERE 
+    favorites.id =1;
+
+
+
+    SELECT recipes.*, accounts.*, favorites.*
+    FROM favorites
+    JOIN recipes ON recipes.id = favorites.recipeId
+    JOIN accounts ON accounts.id = recipes.id
+    WHERE favorites.accountId = @userId;

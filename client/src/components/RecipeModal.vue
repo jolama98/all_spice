@@ -1,13 +1,22 @@
 <script setup>
 import { AppState } from '@/AppState.js';
 import { Recipe } from '../models/Recipes.js';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import Pop from '@/utils/Pop.js';
 import { recipeService } from '@/services/RecipeService.js';
 import { Modal } from 'bootstrap';
+import { ingredientsService } from '@/services/IngredientsService.js';
+import { logger } from '@/utils/Logger.js';
 
 defineProps({ recipes: Recipe })
-// instructionsProp: { type: Instructions, required: true }
+
+const ingredients = computed(() => AppState.ingredients)
+
+const instructions = ref('')
+const activeRecipe = computed(() => {
+  return (AppState.activeRecipes)
+})
+
 
 const recipe = computed(() => AppState.activeRecipes)
 const account = computed(() => AppState.account)
@@ -27,10 +36,30 @@ async function destroyRecipe(recipeId) {
   }
 }
 
-function editRecipe() {
-
+async function makeIngredient() {
+  try {
+    ingredientsService.createIngredient(ingredientData.value)
+  }
+  catch (error) {
+    Pop.error(error);
+  }
 }
+const ingredientData = ref({
+  quantity: 0,
+  name: ''
+})
 
+async function editRecipe() {
+  try {
+    const newRecipe = await recipeService.editRecipeInstruction(instructions)
+    logger.log(newRecipe)
+    Pop.success("edited")
+  }
+  catch (error) {
+    Pop.error(error);
+  }
+}
+let edit = ref(false)
 
 </script>
 
@@ -48,27 +77,69 @@ function editRecipe() {
           </div>
 
           <div class="col-7">
+
             <div class="card border-0">
               <div class="d-flex p-2 justify-content-between ">
                 <h2>{{ recipe?.title }} <button class="btn  fs-1" data-bs-toggle="dropdown" aria-expanded="false"
-                    v-if="account?.id == recipe.creator?.id">...</button>
+                    v-if="account?.id == recipe?.creator.id">...</button>
                   <div class="dropdown">
                     <ul class="dropdown-menu">
                       <li><button class="dropdown-item btn del-btn " @click="destroyRecipe(recipe.id)">Delete</button>
                       </li>
-                      <li><button class="dropdown-item btn edit-btn" @click="editRecipe()">Edit Recipe</button>
+                      <li><button class="dropdown-item btn edit-btn" @click="edit = !edit">Edit
+                          Recipe</button>
                       </li>
                     </ul>
                   </div>
                 </h2>
                 <button type="button" class="btn-close p-2" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="d-flex flex-column justify-content-between">
-                <p class="text-bg rounded-5 p-2 d-flex align-self-start text-light">{{ recipe?.category }}</p>
-                <p>By {{ recipe?.creator.name }}</p>
+              <div v-if="edit" class="p-1">
+                <div class="d-flex flex-column justify-content-between">
+                  <p class="text-bg rounded-5 p-2 d-flex align-self-start text-light">{{ recipe?.category }}</p>
+                  <p>By {{ recipe?.creator.name }}</p>
+                </div>
+                <form @submit.prevent="editRecipe()" class="">
+                  <p class="fw-bold">Instructions</p>
+                  <p>{{ recipe?.instructions }}</p>
+                  <div class="mt-3 d-flex">
+                    <textarea v-model="instructions" class="form-control" id="instructionsTextArea" rows="6"
+                      style="resize: none;"></textarea>
+                    <button type="submit" class="btn btn-success w-25 align-self-end mb-2">Save</button>
+                  </div>
+                </form>
+                <h4 class="mt-3">Ingredients:</h4>
+                <div class="">
+                  <form @submit.prevent="makeIngredient()" class="input-group">
+                    <input v-model="ingredientData.quantity" type="text" aria-label="quantity" class="form-control"
+                      placeholder="quantity">
+                    <input v-model="ingredientData.name" type="text" aria-label="ingredient" class="form-control w-50"
+                      placeholder="new ingredient text">
+                    <button class="btn " type="submit">Add</button>
+                  </form>
+                </div>
               </div>
-              <p class="fw-bold">Instructions</p>
-              <p>{{ recipe?.instructions }}</p>
+              <div v-else class="p-1">
+                <div class="d-flex flex-column justify-content-between">
+                  <p class="text-bg rounded-5 p-2 d-flex align-self-start text-light">{{ recipe?.category }}</p>
+                  <p>By {{ recipe?.creator.name }}</p>
+                </div>
+                <p class="fw-bold">Instructions</p>
+                <p>{{ recipe?.instructions }}</p>
+                <h4 class="mt-3">Ingredients:</h4>
+
+                <div v-for="ingredient in ingredients" :key="ingredient.id" class="d-flex">
+                  <p class="mb-1"><span type="button" @click="console.log('click')"
+                      class="text-danger fw-bolder">X</span>
+                    {{ ingredient.quantity }} {{ ingredient.name }}</p>
+                  <div v-for="ingredient in ingredients" :key="ingredient.id" class="d-flex">
+                    <p class="mb-1">• {{ ingredient.quantity }} {{ ingredient.name }}</p>
+                  </div>
+
+
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
